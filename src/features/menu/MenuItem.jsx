@@ -5,6 +5,7 @@ function MenuItem({ pizza }) {
   // eslint-disable-next-line no-unused-vars
   // eslint-disable-next-line react/prop-types
   const { id, name, unitPrice, ingredients, soldOut, imageUrl } = pizza;
+  //TODO Erase unused code "id"
   console.log(id);
   return (
     <li>
