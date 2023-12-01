@@ -1,10 +1,11 @@
 //TODO:
 // eslint-disable-next-line no-unused-vars
 import { useState } from "react";
-import { Form, redirect, useNavigation } from "react-router-dom";
+import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
 import { createOrder } from "../../services/apiRestaurant";
 
 // https://uibakery.io/regex-library/phone-number
+//TODO
 // eslint-disable-next-line no-unused-vars
 const isValidPhone = (str) =>
   /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/.test(
@@ -36,9 +37,10 @@ const fakeCart = [
 ];
 
 function CreateOrder() {
-  // const [withPriority, setWithPriority] = useState(false);
-  //TODO:
-  // eslint-disable-next-line no-unused-vars
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submiting";
+
+  const formErrors = useActionData();
   const cart = fakeCart;
 
   return (
@@ -56,6 +58,7 @@ function CreateOrder() {
           <div>
             <input type="tel" name="phone" required />
           </div>
+          {formErrors.phone && <p>{formErrors.phone}</p>}
         </div>
         <div>
           <label>Address</label>
@@ -75,7 +78,9 @@ function CreateOrder() {
         </div>
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-          <button>Order now</button>
+          <button disabled={isSubmitting}>
+            {isSubmitting ? "Placing order" : "Order now"}
+          </button>
         </div>
       </Form>
     </div>
@@ -90,9 +95,15 @@ async function action({ request }) {
     cart: JSON.parse(data.cart),
     priority: data.priority === "on",
   };
-  //We first create the order in the API,
-  //we then redirect to the order page
+  //Error validation
+  const errors = {};
+  if (!isValidPhone(order.phone))
+    errors.phone =
+      "Please give us yout correct phone number. We might need it to contact you.";
 
+  if (Object.keys(errors).length > 0) return errors;
+
+  //If everything goes well... create new Order in the API
   const newOrder = await createOrder(order);
   return redirect(`/order/${newOrder.id}`);
 }
