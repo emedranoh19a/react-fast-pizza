@@ -1,24 +1,35 @@
+//TODO erase the following
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+
+import Button from "../../ui/Button";
 import { formatCurrency } from "../../utils/helpers";
-// eslint-disable-next-line react/prop-types
+
 function MenuItem({ pizza }) {
-  // TODO:
-  // eslint-disable-next-line no-unused-vars
-  // eslint-disable-next-line react/prop-types
   const { id, name, unitPrice, ingredients, soldOut, imageUrl } = pizza;
-  //TODO Erase unused code "id"
-  console.log(id);
+
   return (
-    <li>
-      <img src={imageUrl} alt={name} />
-      <div>
-        <p>{name}</p>
-        {/* 
-        
-        eslint-disable-next-line react/prop-types */}
-        <p>{ingredients.join(", ")}</p>
-        {/* TODO */}
-        <div>
-          {!soldOut ? <p>{formatCurrency(unitPrice)}</p> : <p>Sold out</p>}
+    <li className="flex gap-4 py-2">
+      <img
+        src={imageUrl}
+        alt={name}
+        className={`h-24 ${soldOut ? "opacity-70 grayscale" : ""}`}
+      />
+      <div className="flex grow flex-col pt-0.5">
+        <p className="font-medium">{name}</p>
+        <p className="text-sm capitalize italic text-stone-500">
+          {ingredients.join(", ")}
+        </p>
+        <div className="mt-auto flex items-center justify-between">
+          {!soldOut ? (
+            <p className="text-sm">{formatCurrency(unitPrice)}</p>
+          ) : (
+            <p className="text-sm font-medium uppercase text-stone-500">
+              Sold out
+            </p>
+          )}
+
+          <Button type="small">Add to cart</Button>
         </div>
       </div>
     </li>
