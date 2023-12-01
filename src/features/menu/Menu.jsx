@@ -14,8 +14,10 @@ function Menu() {
   );
 }
 
-export async function loader() {
+async function loader() {
   const menu = await getMenu();
   return menu;
 }
+
 export default Menu;
+export { loader };
